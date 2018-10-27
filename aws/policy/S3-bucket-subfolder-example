@@ -1,0 +1,34 @@
+https://aws.amazon.com/blogs/security/writing-iam-policies-grant-access-to-user-specific-folders-in-an-amazon-s3-bucket/
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_controlling.html
+https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html
+{
+ "Version":"2012-10-17",
+ "Statement": [
+   {
+     "Sid": "AllowUserToSeeBucketListInTheConsole",
+     "Action": ["s3:ListAllMyBuckets", "s3:GetBucketLocation"],
+     "Effect": "Allow",
+     "Resource": ["arn:aws:s3:::*"]
+   },
+  {
+     "Sid": "AllowRootAndHomeListingOfCompanyBucket",
+     "Action": ["s3:ListBucket"],
+     "Effect": "Allow",
+     "Resource": ["arn:aws:s3:::my-company"],
+     "Condition":{"StringEquals":{"s3:prefix":["","home/", "home/David"],"s3:delimiter":["/"]}}
+    },
+   {
+     "Sid": "AllowListingOfUserFolder",
+     "Action": ["s3:ListBucket"],
+     "Effect": "Allow",
+     "Resource": ["arn:aws:s3:::my-company"],
+     "Condition":{"StringLike":{"s3:prefix":["home/David/*"]}}
+   },
+   {
+     "Sid": "AllowAllS3ActionsInUserFolder",
+     "Effect": "Allow",
+     "Action": ["s3:*"],
+     "Resource": ["arn:aws:s3:::my-company/home/David/*"]
+   }
+ ]
+}
